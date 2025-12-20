@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import org.springframework.stereotype.Repository;
 import com.example.demo.model.Bin;
 import com.example.demo.model.FillLevelRecord;
 
+@Repository
 public interface FillLevelRecordRepository extends JpaRepository<FillLevelRecord, Long> {
 
     List<FillLevelRecord> findByBinOrderByRecordedAtDesc(Bin bin);

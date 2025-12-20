@@ -5,10 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import org.springframework.stereotype.Repository;
 import com.example.demo.model.OverflowPrediction;
 import com.example.demo.model.Zone;
 
+@Repository
 public interface OverflowPredictionRepository
         extends JpaRepository<OverflowPrediction, Long> {
 
