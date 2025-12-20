@@ -6,8 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,38 +18,31 @@ public class UsagePatternModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // @ManyToOne
-    // @JoinColumn(name = "bin_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "bin_id")
     private Bin bin;
+
     private Double avgDailyIncreaseWeekday;
     private Double avgDailyIncreaseWeekend;
 
     private Timestamp lastUpdated;
 
-    @PrePersist
-    @PreUpdate
-    protected void onUpdate() {
-        lastUpdated = new Timestamp(System.currentTimeMillis());
-    }
-
     public UsagePatternModel() {
     }
 
-    public UsagePatternModel(Long id, Bin bin, Double avgDailyIncreaseWeekday, Double avgDailyIncreaseWeekend,
-            Timestamp lastUpdated) {
-        this.id = id;
+    public UsagePatternModel(Bin bin,
+                             Double avgDailyIncreaseWeekday,
+                             Double avgDailyIncreaseWeekend,
+                             Timestamp lastUpdated) {
         this.bin = bin;
         this.avgDailyIncreaseWeekday = avgDailyIncreaseWeekday;
         this.avgDailyIncreaseWeekend = avgDailyIncreaseWeekend;
         this.lastUpdated = lastUpdated;
     }
 
+    // Getters and setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Bin getBin() {
@@ -83,6 +76,4 @@ public class UsagePatternModel {
     public void setLastUpdated(Timestamp lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
-
 }
-

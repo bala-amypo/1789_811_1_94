@@ -6,38 +6,44 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "fill_level_records")
 public class FillLevelRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // @ManyToOne
-    // @JoinColumn(name = "bin_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "bin_id")
     private Bin bin;
+
     private Double fillPercentage;
+
     private Timestamp recordedAt;
+
     private Boolean isWeekend;
-    
+
     public FillLevelRecord() {
     }
 
-    public FillLevelRecord(Long id, Bin bin, Double fillPercentage, Timestamp recordedAt, Boolean isWeekend) {
-        this.id = id;
+    public FillLevelRecord(Bin bin,
+                           Double fillPercentage,
+                           Timestamp recordedAt,
+                           Boolean isWeekend) {
         this.bin = bin;
         this.fillPercentage = fillPercentage;
         this.recordedAt = recordedAt;
         this.isWeekend = isWeekend;
     }
 
+    // Getters and setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Bin getBin() {
@@ -71,5 +77,4 @@ public class FillLevelRecord {
     public void setIsWeekend(Boolean isWeekend) {
         this.isWeekend = isWeekend;
     }
-    
 }
