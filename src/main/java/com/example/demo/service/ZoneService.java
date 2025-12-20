@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-
 import java.util.List;
 
 import com.example.demo.model.Zone;
@@ -17,4 +16,3 @@ public interface ZoneService {
 
     void deactivateZone(Long id);
 }
-
