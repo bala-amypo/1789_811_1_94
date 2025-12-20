@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Bin;
@@ -12,6 +14,7 @@ import com.example.demo.repository.BinRepository;
 import com.example.demo.repository.UsagePatternModelRepository;
 import com.example.demo.service.UsagePatternModelService;
 
+@Service
 public class UsagePatternModelServiceImpl implements UsagePatternModelService {
 
     private final UsagePatternModelRepository modelRepository;

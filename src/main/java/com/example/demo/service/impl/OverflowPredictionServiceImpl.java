@@ -7,6 +7,8 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Bin;
@@ -21,6 +23,7 @@ import com.example.demo.repository.UsagePatternModelRepository;
 import com.example.demo.repository.ZoneRepository;
 import com.example.demo.service.OverflowPredictionService;
 
+@Service
 public class OverflowPredictionServiceImpl implements OverflowPredictionService {
 
     private final BinRepository binRepository;
