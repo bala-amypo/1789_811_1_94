@@ -87,9 +87,9 @@
 		<dependency>
     		<groupId>mysql</groupId>
     		<artifactId>mysql-connector-j</artifactId>
-    <version>8.0.33</version>
-    <scope>runtime</scope>
-</dependency>
+    		<version>8.0.33</version>
+    		<scope>runtime</scope>
+		</dependency>
 
     </dependencies>
 
@@ -116,3 +116,5 @@
 
 
 </project>
+
+mvn dependency:purge-local-repository -DmanualInclude="mysql:mysql-connector-j" -DreResolve=true
