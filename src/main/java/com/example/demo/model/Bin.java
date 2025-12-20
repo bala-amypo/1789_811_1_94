@@ -7,17 +7,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "bins")
 public class Bin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column( unique = true)
+    @Column(unique = true, nullable = false)
     private String identifier;
 
     private String locationDescription;
@@ -25,32 +27,29 @@ public class Bin {
     private Double latitude;
     private Double longitude;
 
-    // @ManyToOne
-    // @JoinColumn(name = "zone_id")
+    @ManyToOne
+    @JoinColumn(name = "zone_id")
     private Zone zone;
+
     private Double capacityLiters;
-    private Boolean active = true;
-    
+
+    private Boolean active;
+
     private Timestamp createdAt;
     private Timestamp updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = new Timestamp(System.currentTimeMillis());
-        updatedAt = createdAt;
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = new Timestamp(System.currentTimeMillis());
-    }
 
     public Bin() {
     }
 
-    public Bin(Long id, String identifier, String locationDescription, Double latitude, Double longitude, Zone zone,
-            Double capacityLiters, Boolean active, Timestamp createdAt, Timestamp updatedAt) {
-        this.id = id;
+    public Bin(String identifier,
+               String locationDescription,
+               Double latitude,
+               Double longitude,
+               Zone zone,
+               Double capacityLiters,
+               Boolean active,
+               Timestamp createdAt,
+               Timestamp updatedAt) {
         this.identifier = identifier;
         this.locationDescription = locationDescription;
         this.latitude = latitude;
@@ -62,12 +61,9 @@ public class Bin {
         this.updatedAt = updatedAt;
     }
 
+    // Getters and setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getIdentifier() {
@@ -141,6 +137,4 @@ public class Bin {
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }
-
