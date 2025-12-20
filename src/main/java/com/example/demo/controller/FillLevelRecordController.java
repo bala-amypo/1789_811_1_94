@@ -1,4 +1,5 @@
 package com.example.demo.controller;
+
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,8 +41,7 @@ public class FillLevelRecordController {
     @GetMapping("/bin/{binId}/recent")
     public List<FillLevelRecord> getRecent(
             @PathVariable Long binId,
-            @RequestParam int limit
-    ) {
+            @RequestParam int limit) {
         return recordService.getRecentRecords(binId, limit);
     }
 }

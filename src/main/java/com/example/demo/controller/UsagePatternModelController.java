@@ -31,8 +31,7 @@ public class UsagePatternModelController {
     @PutMapping("/{id}")
     public UsagePatternModel update(
             @PathVariable Long id,
-            @RequestBody UsagePatternModel model
-    ) {
+            @RequestBody UsagePatternModel model) {
         return modelService.updateModel(id, model);
     }
 
@@ -46,4 +45,3 @@ public class UsagePatternModelController {
         return modelService.getAllModels();
     }
 }
-

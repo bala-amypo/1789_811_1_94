@@ -1,4 +1,5 @@
 package com.example.demo.controller;
+
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,6 @@ import com.example.demo.service.BinService;
 
 @RestController
 @RequestMapping("/api/bins")
-
 public class BinController {
 
     private final BinService binService;
