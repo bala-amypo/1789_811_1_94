@@ -19,7 +19,7 @@ public class Bin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String identifier;
 
     private String locationDescription;
