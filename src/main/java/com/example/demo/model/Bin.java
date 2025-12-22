@@ -20,7 +20,6 @@ public class Bin {
     private Long id;
 
     @Column(unique = true)
-    @NotBlank(message="Error")
     private String identifier;
 
     private String locationDescription;
@@ -33,7 +32,6 @@ public class Bin {
     private Zone zone;
 
     private Double capacityLiters;
-    @NotBlank(message="Error")
     private Boolean active;
 
     private Timestamp createdAt;

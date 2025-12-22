@@ -21,7 +21,6 @@ public class OverflowPrediction {
 
     @ManyToOne
     @JoinColumn(name = "bin_id")
-    @NotBlank(message="Error")
     private Bin bin;
 
     private Date predictedFullDate;
