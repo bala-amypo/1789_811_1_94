@@ -24,7 +24,7 @@ public class UsagePatternModel {
 
     private Double avgDailyIncreaseWeekday;
     private Double avgDailyIncreaseWeekend;
-
+    
     private Timestamp lastUpdated;
 
     public UsagePatternModel() {

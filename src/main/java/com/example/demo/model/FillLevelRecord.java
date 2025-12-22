@@ -21,7 +21,7 @@ public class FillLevelRecord {
     @ManyToOne
     @JoinColumn(name = "bin_id")
     private Bin bin;
-
+    @NotBlank(message="Error")
     private Double fillPercentage;
 
     private Timestamp recordedAt;

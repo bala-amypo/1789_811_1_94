@@ -34,7 +34,7 @@ public class Bin {
 
     private Double capacityLiters;
     @NotBlank(message="Error")
-    private Boolean active;
+    private Boolean active=true;
 
     private Timestamp createdAt;
     private Timestamp updatedAt;
