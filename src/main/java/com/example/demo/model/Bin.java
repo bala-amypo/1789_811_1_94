@@ -20,6 +20,7 @@ public class Bin {
     private Long id;
 
     @Column(unique = true)
+    @NotBlank(message="identifier should not be blank")
     private String identifier;
 
     private String locationDescription;
