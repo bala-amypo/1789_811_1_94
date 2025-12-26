@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
@@ -24,7 +26,6 @@ public class OverflowPrediction {
     private Bin bin;
 
     private Date predictedFullDate;
-
     private Integer daysUntilFull;
 
     @ManyToOne
@@ -33,11 +34,10 @@ public class OverflowPrediction {
 
     private Timestamp generatedAt;
 
-    public OverflowPrediction() {
-    }
+    public OverflowPrediction() {}
 
-    public OverflowPrediction(Bin bin,
-                              Date predictedFullDate,
+    // Existing constructor
+    public OverflowPrediction(Bin bin, Date predictedFullDate,
                               Integer daysUntilFull,
                               UsagePatternModel modelUsed,
                               Timestamp generatedAt) {
@@ -47,6 +47,52 @@ public class OverflowPrediction {
         this.modelUsed = modelUsed;
         this.generatedAt = generatedAt;
     }
+
+    // ✅ ADDED: LocalDateTime constructor
+    public OverflowPrediction(Bin bin, LocalDateTime predictedFullDate,
+                              Integer daysUntilFull,
+                              UsagePatternModel modelUsed,
+                              LocalDateTime generatedAt) {
+        this(
+            bin,
+            Date.from(predictedFullDate.atZone(ZoneId.systemDefault()).toInstant()),
+            daysUntilFull,
+            modelUsed,
+            Timestamp.valueOf(generatedAt)
+        );
+    }
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // private Long id;
+
+    // @ManyToOne
+    // @JoinColumn(name = "bin_id")
+    // private Bin bin;
+
+    // private Date predictedFullDate;
+
+    // private Integer daysUntilFull;
+
+    // @ManyToOne
+    // @JoinColumn(name = "model_id")
+    // private UsagePatternModel modelUsed;
+
+    // private Timestamp generatedAt;
+
+    // public OverflowPrediction() {
+    // }
+
+    // public OverflowPrediction(Bin bin,
+    //                           Date predictedFullDate,
+    //                           Integer daysUntilFull,
+    //                           UsagePatternModel modelUsed,
+    //                           Timestamp generatedAt) {
+    //     this.bin = bin;
+    //     this.predictedFullDate = predictedFullDate;
+    //     this.daysUntilFull = daysUntilFull;
+    //     this.modelUsed = modelUsed;
+    //     this.generatedAt = generatedAt;
+    // }
 
     // Getters and setters
     public Long getId() {

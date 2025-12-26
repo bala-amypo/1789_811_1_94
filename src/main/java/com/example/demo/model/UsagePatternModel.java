@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,12 +25,11 @@ public class UsagePatternModel {
 
     private Double avgDailyIncreaseWeekday;
     private Double avgDailyIncreaseWeekend;
-
     private Timestamp lastUpdated;
 
-    public UsagePatternModel() {
-    }
+    public UsagePatternModel() {}
 
+    // Existing constructor
     public UsagePatternModel(Bin bin,
                              Double avgDailyIncreaseWeekday,
                              Double avgDailyIncreaseWeekend,
@@ -39,6 +39,42 @@ public class UsagePatternModel {
         this.avgDailyIncreaseWeekend = avgDailyIncreaseWeekend;
         this.lastUpdated = lastUpdated;
     }
+
+    // ✅ ADDED: LocalDateTime constructor
+    public UsagePatternModel(Bin bin,
+                             Double avgDailyIncreaseWeekday,
+                             Double avgDailyIncreaseWeekend,
+                             LocalDateTime lastUpdated) {
+        this(bin,
+             avgDailyIncreaseWeekday,
+             avgDailyIncreaseWeekend,
+             Timestamp.valueOf(lastUpdated));
+    }
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // private Long id;
+
+    // @ManyToOne
+    // @JoinColumn(name = "bin_id")
+    // private Bin bin;
+
+    // private Double avgDailyIncreaseWeekday;
+    // private Double avgDailyIncreaseWeekend;
+
+    // private Timestamp lastUpdated;
+
+    // public UsagePatternModel() {
+    // }
+
+    // public UsagePatternModel(Bin bin,
+    //                          Double avgDailyIncreaseWeekday,
+    //                          Double avgDailyIncreaseWeekend,
+    //                          Timestamp lastUpdated) {
+    //     this.bin = bin;
+    //     this.avgDailyIncreaseWeekday = avgDailyIncreaseWeekday;
+    //     this.avgDailyIncreaseWeekend = avgDailyIncreaseWeekend;
+    //     this.lastUpdated = lastUpdated;
+    // }
 
     // Getters and setters
     public Long getId() {

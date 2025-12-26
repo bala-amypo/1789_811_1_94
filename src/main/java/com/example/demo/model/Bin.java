@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,8 +16,71 @@ import jakarta.persistence.Table;
 @Table(name = "bins")
 public class Bin {
 
-
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String identifier;
+
+    private String locationDescription;
+    private Double latitude;
+    private Double longitude;
+
+    @ManyToOne
+    @JoinColumn(name = "zone_id")
+    private Zone zone;
+
+    private Double capacityLiters;
+    private Boolean active;
+
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
+
+    public Bin() {}
+
+    // Existing Timestamp constructor
+    public Bin(String identifier, String locationDescription,
+               Double latitude, Double longitude, Zone zone,
+               Double capacityLiters, Boolean active,
+               Timestamp createdAt, Timestamp updatedAt) {
+        this.identifier = identifier;
+        this.locationDescription = locationDescription;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.zone = zone;
+        this.capacityLiters = capacityLiters;
+        this.active = active;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    // ✅ ADDED: LocalDateTime constructor (for TestNG)
+    public Bin(String identifier, String locationDescription,
+               Double latitude, Double longitude, Zone zone,
+               Double capacityLiters, Boolean active,
+               LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this(identifier, locationDescription, latitude, longitude, zone,
+             capacityLiters, active,
+             Timestamp.valueOf(createdAt),
+             Timestamp.valueOf(updatedAt));
+    }
+
+    // Getters & setters
+    // public Long getId() { return id; }
+
+    public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = Timestamp.valueOf(createdAt);
+    }
+
+    public Timestamp getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = Timestamp.valueOf(updatedAt);
+    }
     // @Id
     // @GeneratedValue(strategy = GenerationType.IDENTITY)
     // private Long id;
@@ -64,6 +128,7 @@ public class Bin {
     // }
 
     // Getters and setters
+
     public Long getId() {
         return id;
     }
@@ -124,19 +189,19 @@ public class Bin {
         this.active = active;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
+    // public Timestamp getCreatedAt() {
+    //     return createdAt;
+    // }
 
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
+    // public void setCreatedAt(Timestamp createdAt) {
+    //     this.createdAt = createdAt;
+    // }
 
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
+    // public Timestamp getUpdatedAt() {
+    //     return updatedAt;
+    // }
 
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    // public void setUpdatedAt(Timestamp updatedAt) {
+    //     this.updatedAt = updatedAt;
+    // }
 }
