@@ -50,4 +50,7 @@ public class UsagePatternModelServiceImpl implements UsagePatternModelService {
     }
 
     @Override
-    public List<UsagePatt
+    public List<UsagePatternModel> getAllModels() {
+        return modelRepository.findAll();
+    }
+}
