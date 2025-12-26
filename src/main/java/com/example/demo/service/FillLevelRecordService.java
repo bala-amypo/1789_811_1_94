@@ -13,7 +13,9 @@ public interface FillLevelRecordService {
 
     FillLevelRecord getRecordById(Long id) throws ResourceNotFoundException;
 
-    List<FillLevelRecord> getRecentRecords(Long binId, int limit) throws ResourceNotFoundException;
+    List<FillLevelRecord> getRecordsForBin(Long binId) throws ResourceNotFoundException;
+
+    List<FillLevelRecord> getRecentRecordsForBin(Long binId, int limit) throws ResourceNotFoundException;
 
     List<FillLevelRecord> getRecordsWithinRange(Long binId, LocalDateTime start, LocalDateTime end);
 }

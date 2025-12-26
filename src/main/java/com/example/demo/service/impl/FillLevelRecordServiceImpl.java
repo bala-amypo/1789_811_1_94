@@ -53,4 +53,17 @@ public class FillLevelRecordServiceImpl implements FillLevelRecordService {
         Bin bin = binRepository.findById(binId).orElseThrow(() -> new RuntimeException("Bin not found"));
         return recordRepository.findByBinAndRecordedAtBetween(bin, start, end);
     }
+    @Override
+public List<FillLevelRecord> getRecordsForBin(Long binId) throws ResourceNotFoundException {
+    Bin bin = binRepository.findById(binId)
+            .orElseThrow(() -> new ResourceNotFoundException("Bin not found"));
+    return recordRepository.findByBinOrderByRecordedAtDesc(bin);
+}
+
+@Override
+public List<FillLevelRecord> getRecentRecordsForBin(Long binId, int limit) throws ResourceNotFoundException {
+    List<FillLevelRecord> allRecords = getRecordsForBin(binId);
+    return allRecords.subList(0, Math.min(limit, allRecords.size()));
+}
+
 }

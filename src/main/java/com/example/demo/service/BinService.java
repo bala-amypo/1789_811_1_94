@@ -6,6 +6,7 @@ import com.example.demo.model.Bin;
 
 import java.util.List;
 
+
 public interface BinService {
 
     Bin createBin(Bin bin) throws BadRequestException;
