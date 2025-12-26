@@ -8,19 +8,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "zones")
 public class Zone {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String zoneName;
 
     private String description;
 
-    private Boolean active;
+    private Boolean active=true;
 
     public Zone() {
     }
