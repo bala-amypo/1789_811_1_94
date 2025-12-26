@@ -1,21 +1,16 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.FillLevelRecord;
-
-import java.time.LocalDateTime;
 import java.util.List;
+
+import com.example.demo.model.FillLevelRecord;
 
 public interface FillLevelRecordService {
 
-    FillLevelRecord createRecord(FillLevelRecord record) throws BadRequestException;
+    FillLevelRecord createRecord(FillLevelRecord record);
 
-    FillLevelRecord getRecordById(Long id) throws ResourceNotFoundException;
+    FillLevelRecord getRecordById(Long id);
 
-    List<FillLevelRecord> getRecordsForBin(Long binId) throws ResourceNotFoundException;
+    List<FillLevelRecord> getRecordsForBin(Long binId);
 
-    List<FillLevelRecord> getRecentRecordsForBin(Long binId, int limit) throws ResourceNotFoundException;
-
-    List<FillLevelRecord> getRecordsWithinRange(Long binId, LocalDateTime start, LocalDateTime end);
+    List<FillLevelRecord> getRecentRecords(Long binId, int limit);
 }

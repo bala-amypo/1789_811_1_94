@@ -1,7 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.model.UsagePatternModel;
 import java.util.List;
+
+import com.example.demo.model.UsagePatternModel;
 
 public interface UsagePatternModelService {
 
