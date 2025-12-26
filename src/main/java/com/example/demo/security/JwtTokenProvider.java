@@ -1,50 +1,34 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.*;
-import org.springframework.security.core.Authentication;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
+
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtTokenProvider {
+    private final String secret = "qwertyuiop123456asdfghjkl09876x#";
+    private final Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
-    private final String jwtSecret = "VerySecretKeyForJwtDemo1234567890";
-    private final long jwtExpirationMs = 86400000; // 1 day
+    private final long validityMs = 24 * 60 * 60 * 1000;
 
-    public String generateToken(Authentication authentication, Long userId, String role, String email) {
+    public String generateToken(Long userId, String email, String role) {
+
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + validityMs);
+
         return Jwts.builder()
                 .setSubject(email)
                 .claim("userId", userId)
                 .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(key, SignatureAlgorithm.HS256) // Correct method for JJWT 0.11+
                 .compact();
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
-
-    public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.getSubject();
-    }
-
-    public String getRoleFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-        return claims.get("role", String.class);
     }
 }
