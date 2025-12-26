@@ -1,10 +1,18 @@
 package com.example.demo.service.impl;
 
-import org.springframework.stereotype.Service;
-import com.example.demo.exception.*;
-import com.example.demo.model.*;
-import com.example.demo.repository.*;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.Bin;
+import com.example.demo.model.OverflowPrediction;
+import com.example.demo.model.UsagePatternModel;
+import com.example.demo.model.FillLevelRecord;
+import com.example.demo.model.Zone;
+import com.example.demo.repository.BinRepository;
+import com.example.demo.repository.OverflowPredictionRepository;
+import com.example.demo.repository.UsagePatternModelRepository;
+import com.example.demo.repository.FillLevelRecordRepository;
+import com.example.demo.repository.ZoneRepository;
 import com.example.demo.service.OverflowPredictionService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,64 +20,64 @@ import java.util.List;
 @Service
 public class OverflowPredictionServiceImpl implements OverflowPredictionService {
 
-    private final BinRepository binRepo;
-    private final FillLevelRecordRepository recordRepo;
-    private final UsagePatternModelRepository modelRepo;
-    private final OverflowPredictionRepository predRepo;
-    private final ZoneRepository zoneRepo;
+    private final BinRepository binRepository;
+    private final FillLevelRecordRepository recordRepository;
+    private final UsagePatternModelRepository modelRepository;
+    private final OverflowPredictionRepository predictionRepository;
+    private final ZoneRepository zoneRepository;
 
-    public OverflowPredictionServiceImpl(
-            BinRepository binRepo,
-            FillLevelRecordRepository recordRepo,
-            UsagePatternModelRepository modelRepo,
-            OverflowPredictionRepository predRepo,
-            ZoneRepository zoneRepo) {
-        this.binRepo = binRepo;
-        this.recordRepo = recordRepo;
-        this.modelRepo = modelRepo;
-        this.predRepo = predRepo;
-        this.zoneRepo = zoneRepo;
+    public OverflowPredictionServiceImpl(BinRepository binRepository,
+                                         FillLevelRecordRepository recordRepository,
+                                         UsagePatternModelRepository modelRepository,
+                                         OverflowPredictionRepository predictionRepository,
+                                         ZoneRepository zoneRepository) {
+        this.binRepository = binRepository;
+        this.recordRepository = recordRepository;
+        this.modelRepository = modelRepository;
+        this.predictionRepository = predictionRepository;
+        this.zoneRepository = zoneRepository;
     }
 
     @Override
     public OverflowPrediction generatePrediction(Long binId) {
-        Bin bin = binRepo.findById(binId)
+        Bin bin = binRepository.findById(binId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bin not found"));
 
-        FillLevelRecord record =
-                recordRepo.findTop1ByBinOrderByRecordedAtDesc(bin)
-                        .orElseThrow(() -> new ResourceNotFoundException("Fill record not found"));
+        FillLevelRecord lastRecord = recordRepository.findTop1ByBinOrderByRecordedAtDesc(bin)
+                .orElseThrow(() -> new ResourceNotFoundException("No fill record found for bin"));
 
-        UsagePatternModel model =
-                modelRepo.findTop1ByBinOrderByLastUpdatedDesc(bin)
-                        .orElseThrow(() -> new ResourceNotFoundException("Usage pattern model not found"));
+        UsagePatternModel model = modelRepository.findTop1ByBinOrderByLastUpdatedDesc(bin)
+                .orElseThrow(() -> new ResourceNotFoundException("No usage model found for bin"));
 
-        OverflowPrediction p = new OverflowPrediction();
-        p.setBin(bin);
-        p.setModelUsed(model);
-        p.setDaysUntilFull(3);  // example calculation
-        p.setPredictedFullDate(LocalDate.now().plusDays(3));
+        double remainingCapacity = bin.getCapacityLiters() * (100 - lastRecord.getFillPercentage()) / 100;
+        double avgDailyIncrease = (LocalDate.now().getDayOfWeek().getValue() >= 6) ?
+                model.getAvgDailyIncreaseWeekend() : model.getAvgDailyIncreaseWeekday();
+        int daysUntilFull = (int) Math.ceil(remainingCapacity / avgDailyIncrease);
 
-        return predRepo.save(p);
+        OverflowPrediction prediction = new OverflowPrediction();
+        prediction.setBin(bin);
+        prediction.setModelUsed(model);
+        prediction.setDaysUntilFull(daysUntilFull);
+        prediction.setPredictedFullDate(LocalDate.now().plusDays(daysUntilFull));
+
+        return predictionRepository.save(prediction);
     }
 
     @Override
     public OverflowPrediction getPredictionById(Long id) {
-        return predRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Prediction not found"));
+        return predictionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("OverflowPrediction not found"));
     }
 
     @Override
     public List<OverflowPrediction> getPredictionsForBin(Long binId) {
-        Bin bin = binRepo.findById(binId)
+        Bin bin = binRepository.findById(binId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bin not found"));
-        return predRepo.findByBin(bin);
+        return predictionRepository.findByBin(bin);
     }
 
     @Override
     public List<OverflowPrediction> getLatestPredictionsForZone(Long zoneId) {
-        Zone zone = zoneRepo.findById(zoneId)
+        Zone zone = zoneRepository.findById(zoneId)
                 .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
-        return predRepo.findLatestPredictionsForZone(zone);
-    }
-}
+        return predictionRepository.findLatestPredictio
