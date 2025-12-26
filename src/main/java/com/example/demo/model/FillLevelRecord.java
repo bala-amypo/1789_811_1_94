@@ -1,39 +1,80 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "fill_level_records")
 public class FillLevelRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double fillPercentage;
-    private LocalDateTime recordedAt;
-
     @ManyToOne
+    @JoinColumn(name = "bin_id")
     private Bin bin;
 
-    public FillLevelRecord() {}
+    private Double fillPercentage;
 
-    public FillLevelRecord(Long id, Double fillPercentage, LocalDateTime recordedAt, Bin bin) {
-        this.id = id;
+    private Timestamp recordedAt;
+
+    private Boolean isWeekend;
+
+    public FillLevelRecord() {
+    }
+
+    public FillLevelRecord(Bin bin,
+                           Double fillPercentage,
+                           Timestamp recordedAt,
+                           Boolean isWeekend) {
+        this.bin = bin;
         this.fillPercentage = fillPercentage;
         this.recordedAt = recordedAt;
+        this.isWeekend = isWeekend;
+    }
+
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public Bin getBin() {
+        return bin;
+    }
+
+    public void setBin(Bin bin) {
         this.bin = bin;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Double getFillPercentage() {
+        return fillPercentage;
+    }
 
-    public Double getFillPercentage() { return fillPercentage; }
-    public void setFillPercentage(Double fillPercentage) { this.fillPercentage = fillPercentage; }
+    public void setFillPercentage(Double fillPercentage) {
+        this.fillPercentage = fillPercentage;
+    }
 
-    public LocalDateTime getRecordedAt() { return recordedAt; }
-    public void setRecordedAt(LocalDateTime recordedAt) { this.recordedAt = recordedAt; }
+    public Timestamp getRecordedAt() {
+        return recordedAt;
+    }
 
-    public Bin getBin() { return bin; }
-    public void setBin(Bin bin) { this.bin = bin; }
+    public void setRecordedAt(Timestamp recordedAt) {
+        this.recordedAt = recordedAt;
+    }
+
+    public Boolean getIsWeekend() {
+        return isWeekend;
+    }
+
+    public void setIsWeekend(Boolean isWeekend) {
+        this.isWeekend = isWeekend;
+    }
 }
