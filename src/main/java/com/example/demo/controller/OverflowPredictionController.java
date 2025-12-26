@@ -1,10 +1,15 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.demo.model.OverflowPrediction;
 import com.example.demo.service.OverflowPredictionService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/predictions")
@@ -16,21 +21,23 @@ public class OverflowPredictionController {
         this.predictionService = predictionService;
     }
 
-    // POST /api/predictions/bin/{binId}
-    @PostMapping("/bin/{binId}")
-    public OverflowPrediction generatePrediction(@PathVariable Long binId) {
+    @PostMapping("/generate/{binId}")
+    public OverflowPrediction generate(@PathVariable Long binId) {
         return predictionService.generatePrediction(binId);
     }
 
-    // GET /api/predictions/zone/{zoneId}
-    @GetMapping("/zone/{zoneId}")
-    public List<OverflowPrediction> getLatestPredictionsForZone(@PathVariable Long zoneId) {
-        return predictionService.getLatestPredictionsForZone(zoneId);
+    @GetMapping("/{id}")
+    public OverflowPrediction getById(@PathVariable Long id) {
+        return predictionService.getPredictionById(id);
     }
 
-    // GET /api/predictions/bin/{binId}/latest
-    @GetMapping("/bin/{binId}/latest")
-    public OverflowPrediction getLatestPredictionForBin(@PathVariable Long binId) {
-        return predictionService.getLatestPredictionForBin(binId);
+    @GetMapping("/bin/{binId}")
+    public List<OverflowPrediction> getForBin(@PathVariable Long binId) {
+        return predictionService.getPredictionsForBin(binId);
+    }
+
+    @GetMapping("/zone/{zoneId}/latest")
+    public List<OverflowPrediction> getLatestForZone(@PathVariable Long zoneId) {
+        return predictionService.getLatestPredictionsForZone(zoneId);
     }
 }
