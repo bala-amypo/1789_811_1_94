@@ -15,51 +15,53 @@ import jakarta.persistence.Table;
 @Table(name = "bins")
 public class Bin {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String identifier;
+    
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // private Long id;
 
-    private String locationDescription;
+    // @Column(unique = true, nullable = false)
+    // private String identifier;
 
-    private Double latitude;
-    private Double longitude;
+    // private String locationDescription;
 
-    @ManyToOne
-    @JoinColumn(name = "zone_id")
-    private Zone zone;
+    // private Double latitude;
+    // private Double longitude;
 
-    private Double capacityLiters;
+    // @ManyToOne
+    // @JoinColumn(name = "zone_id")
+    // private Zone zone;
 
-    private Boolean active;
+    // private Double capacityLiters;
 
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    // private Boolean active;
 
-    public Bin() {
-    }
+    // private Timestamp createdAt;
+    // private Timestamp updatedAt;
 
-    public Bin(String identifier,
-               String locationDescription,
-               Double latitude,
-               Double longitude,
-               Zone zone,
-               Double capacityLiters,
-               Boolean active,
-               Timestamp createdAt,
-               Timestamp updatedAt) {
-        this.identifier = identifier;
-        this.locationDescription = locationDescription;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.zone = zone;
-        this.capacityLiters = capacityLiters;
-        this.active = active;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+    // public Bin() {
+    // }
+
+    // public Bin(String identifier,
+    //            String locationDescription,
+    //            Double latitude,
+    //            Double longitude,
+    //            Zone zone,
+    //            Double capacityLiters,
+    //            Boolean active,
+    //            Timestamp createdAt,
+    //            Timestamp updatedAt) {
+    //     this.identifier = identifier;
+    //     this.locationDescription = locationDescription;
+    //     this.latitude = latitude;
+    //     this.longitude = longitude;
+    //     this.zone = zone;
+    //     this.capacityLiters = capacityLiters;
+    //     this.active = active;
+    //     this.createdAt = createdAt;
+    //     this.updatedAt = updatedAt;
+    // }
 
     // Getters and setters
     public Long getId() {
