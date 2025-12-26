@@ -1,16 +1,8 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Bin;
-import com.example.demo.model.OverflowPrediction;
-import com.example.demo.model.UsagePatternModel;
-import com.example.demo.model.FillLevelRecord;
-import com.example.demo.model.Zone;
-import com.example.demo.repository.BinRepository;
-import com.example.demo.repository.OverflowPredictionRepository;
-import com.example.demo.repository.UsagePatternModelRepository;
-import com.example.demo.repository.FillLevelRecordRepository;
-import com.example.demo.repository.ZoneRepository;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.OverflowPredictionService;
 import org.springframework.stereotype.Service;
 
@@ -80,4 +72,6 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
     public List<OverflowPrediction> getLatestPredictionsForZone(Long zoneId) {
         Zone zone = zoneRepository.findById(zoneId)
                 .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
-        return predictionRepository.findLatestPredictio
+        return predictionRepository.findLatestPredictionsForZone(zone);
+    }
+}
