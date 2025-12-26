@@ -2,10 +2,15 @@ package com.example.demo.model;
 
 import java.sql.Timestamp;
 import java.time.LocalDate; 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "overflow_predictions")
@@ -38,13 +43,9 @@ public class OverflowPrediction {
         this.generatedAt = generatedAt;
     }
 
-    // Standard Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Bin getBin() { return bin; }
-    public void setBin(Bin bin) { this.bin = bin; }
-    public Date getPredictedFullDate() { return predictedFullDate; }
+    // Standard Setters/Getters
     public void setPredictedFullDate(Date predictedFullDate) { this.predictedFullDate = predictedFullDate; }
+    public Date getPredictedFullDate() { return predictedFullDate; }
 
     /**
      * ✅ FIX: Overloaded Setter for LocalDate.
@@ -58,6 +59,10 @@ public class OverflowPrediction {
         }
     }
 
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Bin getBin() { return bin; }
+    public void setBin(Bin bin) { this.bin = bin; }
     public Integer getDaysUntilFull() { return daysUntilFull; }
     public void setDaysUntilFull(Integer daysUntilFull) { this.daysUntilFull = daysUntilFull; }
     public UsagePatternModel getModelUsed() { return modelUsed; }
