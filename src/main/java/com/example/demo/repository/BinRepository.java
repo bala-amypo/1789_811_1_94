@@ -10,8 +10,6 @@ import com.example.demo.model.Bin;
 import com.example.demo.model.Zone;
 @Repository
 public interface BinRepository extends JpaRepository<Bin, Long> {
-
     Optional<Bin> findByIdentifier(String identifier);
-
     List<Bin> findByZoneAndActiveTrue(Zone zone);
 }

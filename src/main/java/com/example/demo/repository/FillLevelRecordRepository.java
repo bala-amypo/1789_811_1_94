@@ -14,12 +14,7 @@ import com.example.demo.model.FillLevelRecord;
 public interface FillLevelRecordRepository extends JpaRepository<FillLevelRecord, Long> {
 
     List<FillLevelRecord> findByBinOrderByRecordedAtDesc(Bin bin);
-
     Optional<FillLevelRecord> findTop1ByBinOrderByRecordedAtDesc(Bin bin);
-
     List<FillLevelRecord> findByBinAndRecordedAtBetween(
-            Bin bin,
-            LocalDateTime start,
-            LocalDateTime end
-    );
+        Bin bin, LocalDateTime start, LocalDateTime end);
 }
