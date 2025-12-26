@@ -1,65 +1,60 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.model.User;
+import com.example.demo.security.CustomUserDetailsService;
 import com.example.demo.security.JwtTokenProvider;
-import com.example.demo.service.UserService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthController(UserService userService,
+    public AuthController(CustomUserDetailsService userDetailsService,
                           JwtTokenProvider jwtTokenProvider) {
-        this.userService = userService;
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // -----------------------------
+    // REGISTER
+    // -----------------------------
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody AuthRequest request) {
+    public Map<String, Object> register(
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam String password) {
 
-        User user = userService.registerUser(
-                request.getEmail(),
-                request.getEmail(),
-                request.getPassword()
-        );
+        CustomUserDetailsService.DemoUser user =
+                userDetailsService.registerUser(name, email, password);
 
-        String token = jwtTokenProvider.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
-
-        return new AuthResponse(
-                token,
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
+        return Map.of(
+                "message", "User registered successfully",
+                "email", user.getEmail(),
+                "role", user.getRole()
         );
     }
 
+    // -----------------------------
+    // LOGIN
+    // -----------------------------
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
+    public Map<String, Object> login(
+            @RequestParam String email,
+            @RequestParam String password) {
 
-        User user = userService.getByEmail(request.getEmail());
+        // Authentication is simulated (as in your tests)
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(
+                        email, password, Collections.emptyList());
 
-        String token = jwtTokenProvider.generateToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
+        CustomUserDetailsService.DemoUser user =
+                userDetailsService.getByEmail(email);
 
-        return new AuthResponse(
-                token,
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
-    }
-}
-
+        if (user == null) {
+            throw n
