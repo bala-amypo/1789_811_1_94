@@ -53,7 +53,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(
                         email, password, Collections.emptyList());
 
-        CustomUserDetailsService.DemoUser user =
+        CustomUserDetailsService.User user =
                 userDetailsService.getByEmail(email);
 
         if (user == null) {
