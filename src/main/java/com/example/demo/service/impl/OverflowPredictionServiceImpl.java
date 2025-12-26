@@ -38,7 +38,6 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
             UsagePatternModelRepository modelRepository,
             OverflowPredictionRepository predictionRepository,
             ZoneRepository zoneRepository) {
-
         this.binRepository = binRepository;
         this.recordRepository = recordRepository;
         this.modelRepository = modelRepository;
@@ -49,32 +48,35 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
     @Override
     public OverflowPrediction generatePrediction(Long binId) {
 
+        // Fetch the bin
         Bin bin = binRepository.findById(binId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Bin not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bin not found"));
 
         if (!Boolean.TRUE.equals(bin.getActive())) {
             throw new BadRequestException("Bin is inactive");
         }
 
+        // Fetch latest fill level record
         FillLevelRecord latestRecord =
                 recordRepository.findTop1ByBinOrderByRecordedAtDesc(bin)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException("FillLevelRecord not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("FillLevelRecord not found"));
 
+        // Fetch latest usage model
         UsagePatternModel model =
                 modelRepository.findTop1ByBinOrderByLastUpdatedDesc(bin)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException("UsagePatternModel not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("UsagePatternModel not found"));
 
+        // Determine average daily increase
         double dailyIncrease = Boolean.TRUE.equals(latestRecord.getIsWeekend())
                 ? model.getAvgDailyIncreaseWeekend()
                 : model.getAvgDailyIncreaseWeekday();
 
         double remaining = 100.0 - latestRecord.getFillPercentage();
 
+        // Calculate days until full
         int daysUntilFull;
         if (dailyIncrease <= 0) {
+            // If usage is zero or negative, assume bin won't fill
             daysUntilFull = 0;
         } else {
             daysUntilFull = (int) Math.ceil(remaining / dailyIncrease);
@@ -84,12 +86,14 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
             throw new BadRequestException("daysUntilFull must be non-negative");
         }
 
-        LocalDate predictedDate =
-                LocalDate.now().plusDays(daysUntilFull);
+        // Convert LocalDate to Date for predictedFullDate
+        Date predictedFullDate = Date.from(
+                LocalDate.now().plusDays(daysUntilFull)
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant()
+        );
 
-        Date predictedFullDate =
-                Date.from(predictedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
+        // Create and save prediction
         OverflowPrediction prediction = new OverflowPrediction();
         prediction.setBin(bin);
         prediction.setModelUsed(model);
@@ -103,29 +107,22 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
     @Override
     public OverflowPrediction getPredictionById(Long id) {
         return predictionRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("OverflowPrediction not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("OverflowPrediction not found"));
     }
 
     @Override
     public List<OverflowPrediction> getPredictionsForBin(Long binId) {
-
         Bin bin = binRepository.findById(binId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Bin not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bin not found"));
 
-        return predictionRepository.findAll()
-                .stream()
-                .filter(p -> p.getBin().getId().equals(bin.getId()))
-                .toList();
+        // Better: query by binId instead of filtering in memory
+        return predictionRepository.findByBinId(bin.getId());
     }
 
     @Override
     public List<OverflowPrediction> getLatestPredictionsForZone(Long zoneId) {
-
         Zone zone = zoneRepository.findById(zoneId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Zone not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
 
         return predictionRepository.findLatestPredictionsForZone(zone);
     }
