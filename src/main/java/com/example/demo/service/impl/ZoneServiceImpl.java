@@ -1,57 +1,38 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
-
-import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.*;
 import com.example.demo.model.Zone;
 import com.example.demo.repository.ZoneRepository;
-import com.example.demo.service.ZoneService;
 
 @Service
-public class ZoneServiceImpl implements ZoneService {
+public class ZoneServiceImpl {
 
-    private final ZoneRepository zoneRepository;
+    private final ZoneRepository repo;
 
-    public ZoneServiceImpl(ZoneRepository zoneRepository) {
-        this.zoneRepository = zoneRepository;
+    public ZoneServiceImpl(ZoneRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
     public Zone createZone(Zone zone) {
-        if (zone.getActive() == null) {
-            zone.setActive(true);
-        }
-        return zoneRepository.save(zone);
+        if (zone.getActive() == null) zone.setActive(true);
+        return repo.save(zone);
     }
 
-    @Override
-    public Zone updateZone(Long id, Zone zone) {
-        Zone existing = getZoneById(id);
-
-        existing.setZoneName(zone.getZoneName());
-        existing.setDescription(zone.getDescription());
-
-        return zoneRepository.save(existing);
-    }
-
-    @Override
     public Zone getZoneById(Long id) {
-        return zoneRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Zone not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
     }
 
-    @Override
-    public List<Zone> getAllZones() {
-        return zoneRepository.findAll();
+    public Zone updateZone(Long id, Zone update) {
+        Zone z = getZoneById(id);
+        if (update.getDescription() != null) z.setDescription(update.getDescription());
+        return repo.save(z);
     }
 
-    @Override
     public void deactivateZone(Long id) {
-        Zone zone = getZoneById(id);
-        zone.setActive(false);
-        zoneRepository.save(zone);
+        Zone z = getZoneById(id);
+        z.setActive(false);
+        repo.save(z);
     }
 }

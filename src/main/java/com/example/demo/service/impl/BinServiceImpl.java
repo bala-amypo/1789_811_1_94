@@ -1,91 +1,57 @@
 package com.example.demo.service.impl;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import org.springframework.stereotype.Service;
+import com.example.demo.exception.*;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
+
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Bin;
-import com.example.demo.model.Zone;
-import com.example.demo.repository.BinRepository;
-import com.example.demo.repository.ZoneRepository;
-import com.example.demo.service.BinService;
-
 @Service
-public class BinServiceImpl implements BinService {
+public class BinServiceImpl {
 
-    private final BinRepository binRepository;
-    private final ZoneRepository zoneRepository;
+    private final BinRepository binRepo;
+    private final ZoneRepository zoneRepo;
 
-    public BinServiceImpl(BinRepository binRepository,
-                          ZoneRepository zoneRepository) {
-        this.binRepository = binRepository;
-        this.zoneRepository = zoneRepository;
+    public BinServiceImpl(BinRepository binRepo, ZoneRepository zoneRepo) {
+        this.binRepo = binRepo;
+        this.zoneRepo = zoneRepo;
     }
 
-    @Override
     public Bin createBin(Bin bin) {
+        if (bin.getCapacityLiters() == null || bin.getCapacityLiters() <= 0)
+            throw new BadRequestException("Invalid capacity");
 
-        if (bin.getCapacityLiters() == null || bin.getCapacityLiters() <= 0) {
-            throw new BadRequestException("Bin capacity must be greater than 0");
-        }
+        Zone zone = zoneRepo.findById(bin.getZone().getId())
+                .orElseThrow(() -> new BadRequestException("Zone missing"));
 
-        binRepository.findByIdentifier(bin.getIdentifier())
-                .ifPresent(b -> {
-                    throw new BadRequestException("Bin identifier already exists");
-                });
-
-        Zone zone = zoneRepository.findById(bin.getZone().getId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Zone not found"));
-
-        Timestamp now = Timestamp.from(Instant.now());
+        if (!zone.getActive())
+            throw new BadRequestException("Zone inactive");
 
         bin.setZone(zone);
-        bin.setActive(true);
-        bin.setCreatedAt(now);
-        bin.setUpdatedAt(now);
-
-        return binRepository.save(bin);
+        if (bin.getActive() == null) bin.setActive(true);
+        return binRepo.save(bin);
     }
 
-    @Override
-    public Bin updateBin(Long id, Bin bin) {
-        Bin existing = getBinById(id);
-
-        if (bin.getCapacityLiters() != null && bin.getCapacityLiters() <= 0) {
-            throw new BadRequestException("capacity must be greater than 0");
-        }
-
-        existing.setLocationDescription(bin.getLocationDescription());
-        existing.setLatitude(bin.getLatitude());
-        existing.setLongitude(bin.getLongitude());
-        existing.setCapacityLiters(bin.getCapacityLiters());
-        existing.setUpdatedAt(Timestamp.from(Instant.now()));
-
-        return binRepository.save(existing);
-    }
-
-    @Override
     public Bin getBinById(Long id) {
-        return binRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Bin not found"));
+        return binRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Bin not found"));
     }
 
-    @Override
-    public List<Bin> getAllBins() {
-        return binRepository.findAll();
+    public Bin updateBin(Long id, Bin update) {
+        Bin b = getBinById(id);
+        if (update.getLocationDescription() != null)
+            b.setLocationDescription(update.getLocationDescription());
+        return binRepo.save(b);
     }
 
-    @Override
     public void deactivateBin(Long id) {
-        Bin bin = getBinById(id);
-        bin.setActive(false);
-        bin.setUpdatedAt(Timestamp.from(Instant.now()));
-        binRepository.save(bin);
+        Bin b = getBinById(id);
+        b.setActive(false);
+        binRepo.save(b);
+    }
+
+    public List<Bin> getAllBins() {
+        return binRepo.findAll();
     }
 }

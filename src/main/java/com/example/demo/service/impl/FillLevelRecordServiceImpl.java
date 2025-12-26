@@ -1,81 +1,45 @@
 package com.example.demo.service.impl;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.List;
 import org.springframework.stereotype.Service;
+import com.example.demo.exception.*;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.Bin;
-import com.example.demo.model.FillLevelRecord;
-import com.example.demo.repository.BinRepository;
-import com.example.demo.repository.FillLevelRecordRepository;
-import com.example.demo.service.FillLevelRecordService;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
-public class FillLevelRecordServiceImpl implements FillLevelRecordService {
+public class FillLevelRecordServiceImpl {
 
-    private final FillLevelRecordRepository recordRepository;
-    private final BinRepository binRepository;
+    private final FillLevelRecordRepository repo;
+    private final BinRepository binRepo;
 
-    public FillLevelRecordServiceImpl(FillLevelRecordRepository recordRepository,
-                                      BinRepository binRepository) {
-        this.recordRepository = recordRepository;
-        this.binRepository = binRepository;
+    public FillLevelRecordServiceImpl(FillLevelRecordRepository repo, BinRepository binRepo) {
+        this.repo = repo;
+        this.binRepo = binRepo;
     }
 
-    @Override
     public FillLevelRecord createRecord(FillLevelRecord record) {
+        Bin bin = binRepo.findById(record.getBin().getId())
+                .orElseThrow(() -> new BadRequestException("Bin not found"));
 
-        if (record.getFillPercentage() == null ||
-                record.getFillPercentage() < 0 ||
-                record.getFillPercentage() > 100) {
-            throw new BadRequestException("fillPercentage must be between 0 and 100");
-        }
+        if (!bin.getActive())
+            throw new BadRequestException("Bin inactive");
 
-        if (record.getRecordedAt() == null ||
-                record.getRecordedAt().after(Timestamp.from(Instant.now()))) {
-            throw new BadRequestException("recordedAt must not be in the future");
-        }
+        if (record.getRecordedAt().isAfter(LocalDateTime.now()))
+            throw new BadRequestException("Future date");
 
-        Bin bin = binRepository.findById(record.getBin().getId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Bin not found"));
-
-        if (!Boolean.TRUE.equals(bin.getActive())) {
-            throw new BadRequestException("Cannot add record to inactive bin");
-        }
-
-        record.setBin(bin);
-        return recordRepository.save(record);
+        return repo.save(record);
     }
 
-    @Override
     public FillLevelRecord getRecordById(Long id) {
-        return recordRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("FillLevelRecord not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Record not found"));
     }
 
-    @Override
-    public List<FillLevelRecord> getRecordsForBin(Long binId) {
-        Bin bin = binRepository.findById(binId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Bin not found"));
-
-        return recordRepository.findByBinOrderByRecordedAtDesc(bin);
-    }
-
-    @Override
     public List<FillLevelRecord> getRecentRecords(Long binId, int limit) {
-        Bin bin = binRepository.findById(binId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Bin not found"));
-
-        List<FillLevelRecord> records =
-                recordRepository.findByBinOrderByRecordedAtDesc(bin);
-
-        return records.stream().limit(limit).toList();
+        Bin bin = binRepo.findById(binId).orElseThrow();
+        List<FillLevelRecord> list = repo.findByBinOrderByRecordedAtDesc(bin);
+        return list.subList(0, Math.min(limit, list.size()));
     }
 }
