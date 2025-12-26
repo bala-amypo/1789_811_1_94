@@ -48,7 +48,7 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
     @Override
     public OverflowPrediction generatePrediction(Long binId) {
 
-        // Fetch the bin
+        // 1. Fetch and validate Bin
         Bin bin = binRepository.findById(binId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bin not found"));
 
@@ -56,27 +56,27 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
             throw new BadRequestException("Bin is inactive");
         }
 
-        // Fetch latest fill level record
-        FillLevelRecord latestRecord =
-                recordRepository.findTop1ByBinOrderByRecordedAtDesc(bin)
+        // 2. Fetch latest fill level record
+        FillLevelRecord latestRecord = recordRepository.findTop1ByBinOrderByRecordedAtDesc(bin)
                         .orElseThrow(() -> new ResourceNotFoundException("FillLevelRecord not found"));
 
-        // Fetch latest usage model
-        UsagePatternModel model =
-                modelRepository.findTop1ByBinOrderByLastUpdatedDesc(bin)
+        // 3. Fetch latest usage model
+        UsagePatternModel model = modelRepository.findTop1ByBinOrderByLastUpdatedDesc(bin)
                         .orElseThrow(() -> new ResourceNotFoundException("UsagePatternModel not found"));
 
-        // Determine average daily increase
+        // ✅ FIX: Null-safe handling for Double values to prevent NullPointerException
+        Double weekendInc = model.getAvgDailyIncreaseWeekend();
+        Double weekdayInc = model.getAvgDailyIncreaseWeekday();
+        
         double dailyIncrease = Boolean.TRUE.equals(latestRecord.getIsWeekend())
-                ? model.getAvgDailyIncreaseWeekend()
-                : model.getAvgDailyIncreaseWeekday();
+                ? (weekendInc != null ? weekendInc : 0.0)
+                : (weekdayInc != null ? weekdayInc : 0.0);
 
         double remaining = 100.0 - latestRecord.getFillPercentage();
 
-        // Calculate days until full
+        // 4. Calculate days until full
         int daysUntilFull;
         if (dailyIncrease <= 0) {
-            // If usage is zero or negative, assume bin won't fill
             daysUntilFull = 0;
         } else {
             daysUntilFull = (int) Math.ceil(remaining / dailyIncrease);
@@ -86,14 +86,14 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
             throw new BadRequestException("daysUntilFull must be non-negative");
         }
 
-        // Convert LocalDate to Date for predictedFullDate
+        // 5. Convert LocalDate to Date for predictedFullDate
         Date predictedFullDate = Date.from(
                 LocalDate.now().plusDays(daysUntilFull)
                         .atStartOfDay(ZoneId.systemDefault())
                         .toInstant()
         );
 
-        // Create and save prediction
+        // 6. Create and save prediction
         OverflowPrediction prediction = new OverflowPrediction();
         prediction.setBin(bin);
         prediction.setModelUsed(model);
@@ -115,7 +115,6 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
         Bin bin = binRepository.findById(binId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bin not found"));
 
-        // Better: query by binId instead of filtering in memory
         return predictionRepository.findByBinId(bin.getId());
     }
 
@@ -123,6 +122,11 @@ public class OverflowPredictionServiceImpl implements OverflowPredictionService 
     public List<OverflowPrediction> getLatestPredictionsForZone(Long zoneId) {
         Zone zone = zoneRepository.findById(zoneId)
                 .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+
+        // ✅ FIX: Added Inactive Zone validation required by tests
+        if (!Boolean.TRUE.equals(zone.getActive())) {
+            throw new BadRequestException("Zone is inactive");
+        }
 
         return predictionRepository.findLatestPredictionsForZone(zone);
     }
