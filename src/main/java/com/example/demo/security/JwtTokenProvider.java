@@ -1,7 +1,6 @@
 package com.example.demo.security;
 
 import java.util.Date;
-
 import javax.crypto.SecretKey;
 
 import org.springframework.security.core.Authentication;
@@ -15,12 +14,12 @@ public class JwtTokenProvider {
     private final SecretKey key;
     private final long validityMs = 3600000; // 1 hour
 
-    // REQUIRED CONSTRUCTOR (TestNG uses this)
+    // REQUIRED by TestNG
     public JwtTokenProvider(String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // REQUIRED METHOD SIGNATURE
+    // REQUIRED signature by TestNG
     public String generateToken(Authentication authentication,
                                 Long userId,
                                 String role,
