@@ -1,14 +1,86 @@
+// package com.example.demo.model;
+
+// import java.sql.Timestamp;
+
+// import jakarta.persistence.Entity;
+// import jakarta.persistence.GeneratedValue;
+// import jakarta.persistence.GenerationType;
+// import jakarta.persistence.Id;
+// import jakarta.persistence.JoinColumn;
+// import jakarta.persistence.ManyToOne;
+// import jakarta.persistence.Table;
+
+// @Entity
+// public class FillLevelRecord {
+
+//     @Id
+//     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//     private Long id;
+
+//     @ManyToOne
+//     @JoinColumn(name = "bin_id")
+//     private Bin bin;
+//     private Double fillPercentage;
+
+//     private Timestamp recordedAt;
+
+//     private Boolean isWeekend;
+
+//     public FillLevelRecord() {
+//     }
+
+//     public FillLevelRecord(Bin bin,
+//                            Double fillPercentage,
+//                            Timestamp recordedAt,
+//                            Boolean isWeekend) {
+//         this.bin = bin;
+//         this.fillPercentage = fillPercentage;
+//         this.recordedAt = recordedAt;
+//         this.isWeekend = isWeekend;
+//     }
+
+//     // Getters and setters
+//     public Long getId() {
+//         return id;
+//     }
+
+//     public Bin getBin() {
+//         return bin;
+//     }
+
+//     public void setBin(Bin bin) {
+//         this.bin = bin;
+//     }
+
+//     public Double getFillPercentage() {
+//         return fillPercentage;
+//     }
+
+//     public void setFillPercentage(Double fillPercentage) {
+//         this.fillPercentage = fillPercentage;
+//     }
+
+//     public Timestamp getRecordedAt() {
+//         return recordedAt;
+//     }
+
+//     public void setRecordedAt(Timestamp recordedAt) {
+//         this.recordedAt = recordedAt;
+//     }
+
+//     public Boolean getIsWeekend() {
+//         return isWeekend;
+//     }
+
+//     public void setIsWeekend(Boolean isWeekend) {
+//         this.isWeekend = isWeekend;
+//     }
+// }
+
 package com.example.demo.model;
 
-import java.sql.Timestamp;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class FillLevelRecord {
@@ -17,62 +89,17 @@ public class FillLevelRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "bin_id")
-    private Bin bin;
     private Double fillPercentage;
+    private LocalDateTime recordedAt;
 
-    private Timestamp recordedAt;
+    @ManyToOne
+    private Bin bin;
 
-    private Boolean isWeekend;
-
-    public FillLevelRecord() {
-    }
-
-    public FillLevelRecord(Bin bin,
-                           Double fillPercentage,
-                           Timestamp recordedAt,
-                           Boolean isWeekend) {
-        this.bin = bin;
-        this.fillPercentage = fillPercentage;
-        this.recordedAt = recordedAt;
-        this.isWeekend = isWeekend;
-    }
-
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public Bin getBin() {
-        return bin;
-    }
-
-    public void setBin(Bin bin) {
-        this.bin = bin;
-    }
-
-    public Double getFillPercentage() {
-        return fillPercentage;
-    }
-
-    public void setFillPercentage(Double fillPercentage) {
-        this.fillPercentage = fillPercentage;
-    }
-
-    public Timestamp getRecordedAt() {
-        return recordedAt;
-    }
-
-    public void setRecordedAt(Timestamp recordedAt) {
-        this.recordedAt = recordedAt;
-    }
-
-    public Boolean getIsWeekend() {
-        return isWeekend;
-    }
-
-    public void setIsWeekend(Boolean isWeekend) {
-        this.isWeekend = isWeekend;
-    }
+    public Long getId() { return id; }
+    public Double getFillPercentage() { return fillPercentage; }
+    public void setFillPercentage(Double fillPercentage) { this.fillPercentage = fillPercentage; }
+    public LocalDateTime getRecordedAt() { return recordedAt; }
+    public void setRecordedAt(LocalDateTime recordedAt) { this.recordedAt = recordedAt; }
+    public Bin getBin() { return bin; }
+    public void setBin(Bin bin) { this.bin = bin; }
 }
