@@ -1,23 +1,30 @@
 package com.example.demo.security;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
+import javax.crypto.SecretKey;
+
+import org.springframework.security.core.Authentication;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
-@Component
 public class JwtTokenProvider {
-    private final String secret = "qwertyuiop123456asdfghjkl09876x#";
-    private final Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
-    private final long validityMs = 24 * 60 * 60 * 1000;
+    private final SecretKey key;
+    private final long validityMs = 3600000; // 1 hour
 
-    public String generateToken(Long userId, String email, String role) {
+    // REQUIRED CONSTRUCTOR (TestNG uses this)
+    public JwtTokenProvider(String secret) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
+    // REQUIRED METHOD SIGNATURE
+    public String generateToken(Authentication authentication,
+                                Long userId,
+                                String role,
+                                String email) {
 
         Date now = new Date();
         Date expiry = new Date(now.getTime() + validityMs);
@@ -28,7 +35,7 @@ public class JwtTokenProvider {
                 .claim("role", role)
                 .setIssuedAt(now)
                 .setExpiration(expiry)
-                .signWith(key, SignatureAlgorithm.HS256) // Correct method for JJWT 0.11+
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 }
