@@ -57,4 +57,16 @@ public class AuthController {
                 userDetailsService.getByEmail(email);
 
         if (user == null) {
-            throw n
+            throw new RuntimeException("User not found");
+        }
+
+        // Generate JWT
+        String token = jwtTokenProvider.generateToken(auth, user.getId(), user.getRole(), user.getEmail());
+
+        return Map.of(
+                "email", user.getEmail(),
+                "role", user.getRole(),
+                "token", token
+        );
+    }
+}
