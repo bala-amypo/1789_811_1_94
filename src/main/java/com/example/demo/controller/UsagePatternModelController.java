@@ -1,43 +1,47 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.demo.model.UsagePatternModel;
 import com.example.demo.service.UsagePatternModelService;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/models")
 public class UsagePatternModelController {
 
-    private final UsagePatternModelService usagePatternModelService;
+    private final UsagePatternModelService modelService;
 
-    public UsagePatternModelController(UsagePatternModelService usagePatternModelService) {
-        this.usagePatternModelService = usagePatternModelService;
+    public UsagePatternModelController(UsagePatternModelService modelService) {
+        this.modelService = modelService;
     }
 
-    // POST /api/models
     @PostMapping
-    public UsagePatternModel createModel(@RequestBody UsagePatternModel model) {
-        return usagePatternModelService.createModel(model);
+    public UsagePatternModel create(@RequestBody UsagePatternModel model) {
+        return modelService.createModel(model);
     }
 
-    // PUT /api/models/{id}
     @PutMapping("/{id}")
-    public UsagePatternModel updateModel(@PathVariable Long id,
-                                         @RequestBody UsagePatternModel model) {
-        return usagePatternModelService.updateModel(id, model);
+    public UsagePatternModel update(
+            @PathVariable Long id,
+            @RequestBody UsagePatternModel model) {
+        return modelService.updateModel(id, model);
     }
 
-    // GET /api/models/bin/{binId}
     @GetMapping("/bin/{binId}")
-    public UsagePatternModel getModelForBin(@PathVariable Long binId) {
-        return usagePatternModelService.getModelForBin(binId);
+    public UsagePatternModel getForBin(@PathVariable Long binId) {
+        return modelService.getModelForBin(binId);
     }
 
-    // GET /api/models
     @GetMapping
-    public List<UsagePatternModel> getAllModels() {
-        return usagePatternModelService.getAllModels();
+    public List<UsagePatternModel> getAll() {
+        return modelService.getAllModels();
     }
 }
