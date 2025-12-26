@@ -1,9 +1,7 @@
 package com.example.demo.service;
 
-import java.util.List;
-
-
 import com.example.demo.model.FillLevelRecord;
+import java.util.List;
 
 public interface FillLevelRecordService {
 
@@ -13,5 +11,5 @@ public interface FillLevelRecordService {
 
     List<FillLevelRecord> getRecordsForBin(Long binId);
 
-    List<FillLevelRecord> getRecentRecords(Long binId, int limit);
+    List<FillLevelRecord> getRecentRecordsForBin(Long binId, int limit);
 }
