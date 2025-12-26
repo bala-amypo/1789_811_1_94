@@ -33,7 +33,7 @@ public class Bin {
     private Zone zone;
 
     private Double capacityLiters;
-    private Boolean active;
+    private Boolean active=true;
 
     private Timestamp createdAt;
     private Timestamp updatedAt;
