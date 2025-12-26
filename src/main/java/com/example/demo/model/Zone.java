@@ -20,7 +20,7 @@ public class Zone {
 
     private String description;
 
-    private Boolean active;
+    private Boolean active=true;
 
     public Zone() {
     }
