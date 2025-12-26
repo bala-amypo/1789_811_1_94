@@ -28,19 +28,27 @@ public class BinServiceImpl implements BinService {
 
     @Override
     public Bin createBin(Bin bin) {
-
+        // 1. Validate Capacity
         if (bin.getCapacityLiters() == null || bin.getCapacityLiters() <= 0) {
             throw new BadRequestException("Bin capacity must be greater than 0");
         }
 
+        // 2. Validate Identifier Uniqueness
         binRepository.findByIdentifier(bin.getIdentifier())
                 .ifPresent(b -> {
                     throw new BadRequestException("Bin identifier already exists");
                 });
 
+        // 3. Fetch and Validate Zone
         Zone zone = zoneRepository.findById(bin.getZone().getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Zone not found"));
+
+        // ✅ FIX: Rejects the bin if the Zone is inactive. 
+        // This is the specific change needed to pass 'testServlet_likeInactiveZoneRejectsBin'
+        if (!Boolean.TRUE.equals(zone.getActive())) {
+            throw new BadRequestException("Zone is inactive");
+        }
 
         Timestamp now = Timestamp.from(Instant.now());
 
@@ -58,6 +66,17 @@ public class BinServiceImpl implements BinService {
 
         if (bin.getCapacityLiters() != null && bin.getCapacityLiters() <= 0) {
             throw new BadRequestException("capacity must be greater than 0");
+        }
+
+        // 4. Validate Zone during update if provided
+        if (bin.getZone() != null) {
+            Zone zone = zoneRepository.findById(bin.getZone().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Zone not found"));
+            
+            if (!Boolean.TRUE.equals(zone.getActive())) {
+                throw new BadRequestException("Zone is inactive");
+            }
+            existing.setZone(zone);
         }
 
         existing.setLocationDescription(bin.getLocationDescription());
