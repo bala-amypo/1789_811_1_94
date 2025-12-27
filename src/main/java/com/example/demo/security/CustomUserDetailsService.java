@@ -13,7 +13,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // In-memory users (REQUIRED by TestNG)
     private final Map<String, DemoUser> users = new ConcurrentHashMap<>();
-
+ 
     // Default admin user (REQUIRED)
     public CustomUserDetailsService() {
         users.put("admin@city.com",
