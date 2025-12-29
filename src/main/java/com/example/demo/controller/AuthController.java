@@ -60,6 +60,7 @@ public class AuthController {
                 request.getEmail(),   
                 request.getEmail(),   
                 request.getPassword()
+                request.getRole()//
         );
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
