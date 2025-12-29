@@ -18,7 +18,7 @@ public class OpenApiConfig {
                 .servers(List.of(
                         new Server().url("https://9390.pro604cr.amypo.ai/")
                 ))
-                // Add security scheme for JWT
+                
                 .components(new Components()
                         .addSecuritySchemes("BearerAuth", 
                             new SecurityScheme()
@@ -27,7 +27,6 @@ public class OpenApiConfig {
                                 .bearerFormat("JWT")
                         )
                 )
-                // Apply security globally
                 .addSecurityItem(new SecurityRequirement().addList("BearerAuth"));
     }
 }
