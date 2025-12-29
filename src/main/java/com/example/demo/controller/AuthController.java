@@ -22,65 +22,65 @@ public class AuthController {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
-    @PostMapping("/register")
-public AuthResponse register(@RequestBody AuthRequest request) {
-
-    DemoUser user = userDetailsService.registerUser(
-            request.getEmail(),
-            request.getEmail(),
-            request.getPassword(),
-            request.getRole()   // ✅ role passed
-    );
-
-    Authentication auth = new UsernamePasswordAuthenticationToken(
-            user.getEmail(),
-            user.getPassword()
-    );
-
-    String token = jwtTokenProvider.generateToken(
-            auth,
-            1L,
-            user.getRole(),     // ✅ role from user
-            user.getEmail()
-    );
-
-    return new AuthResponse(
-            token,
-            1L,
-            user.getEmail(),
-            user.getRole()
-    );
-}
-
-
 //     @PostMapping("/register")
-//     public AuthResponse register(@RequestBody AuthRequest request) {
+// public AuthResponse register(@RequestBody AuthRequest request) {
 
-//         DemoUser user = userDetailsService.registerUser(
-//                 request.getEmail(),   
-//                 request.getEmail(),   
-//                 request.getPassword()
-//         );
+//     DemoUser user = userDetailsService.registerUser(
+//             request.getEmail(),
+//             request.getEmail(),
+//             request.getPassword(),
+//             request.getRole()   // ✅ role passed
+//     );
 
-//         Authentication auth = new UsernamePasswordAuthenticationToken(
-//                 user.getEmail(),
-//                 user.getPassword()
-//         );
+//     Authentication auth = new UsernamePasswordAuthenticationToken(
+//             user.getEmail(),
+//             user.getPassword()
+//     );
 
-//         String token = jwtTokenProvider.generateToken(
-//                 auth,
-//                 1L,                   
-//                 user.getRole(),
-//                 user.getEmail()
-//         );
+//     String token = jwtTokenProvider.generateToken(
+//             auth,
+//             1L,
+//             user.getRole(),     // ✅ role from user
+//             user.getEmail()
+//     );
 
-//         return new AuthResponse(
-//                 token,
-//                 1L,
-//                 user.getEmail(),
-//                 user.getRole()
-//         );
-//     }
+//     return new AuthResponse(
+//             token,
+//             1L,
+//             user.getEmail(),
+//             user.getRole()
+//     );
+// }
+
+
+    @PostMapping("/register")
+    public AuthResponse register(@RequestBody AuthRequest request) {
+
+        DemoUser user = userDetailsService.registerUser(
+                request.getEmail(),   
+                request.getEmail(),   
+                request.getPassword()
+        );
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                user.getEmail(),
+                user.getPassword()
+        );
+
+        String token = jwtTokenProvider.generateToken(
+                auth,
+                1L,                   
+                user.getRole(),
+                user.getEmail()
+        );
+
+        return new AuthResponse(
+                token,
+                1L,
+                user.getEmail(),
+                user.getRole()
+        );
+    }
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
