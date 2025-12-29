@@ -23,13 +23,12 @@ public class AuthController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // ✅ REGISTER
     @PostMapping("/register")
     public AuthResponse register(@RequestBody AuthRequest request) {
 
         DemoUser user = userDetailsService.registerUser(
-                request.getEmail(),   // name
-                request.getEmail(),   // email
+                request.getEmail(),   
+                request.getEmail(),   
                 request.getPassword()
         );
 
@@ -40,7 +39,7 @@ public class AuthController {
 
         String token = jwtTokenProvider.generateToken(
                 auth,
-                1L,                    // dummy userId (tests don't validate DB id)
+                1L,                   
                 user.getRole(),
                 user.getEmail()
         );
@@ -53,7 +52,6 @@ public class AuthController {
         );
     }
 
-    // ✅ LOGIN
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
 

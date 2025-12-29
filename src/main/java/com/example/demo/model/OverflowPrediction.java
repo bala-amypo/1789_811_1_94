@@ -43,14 +43,10 @@ public class OverflowPrediction {
         this.generatedAt = generatedAt;
     }
 
-    // Standard Setters/Getters
     public void setPredictedFullDate(Date predictedFullDate) { this.predictedFullDate = predictedFullDate; }
     public Date getPredictedFullDate() { return predictedFullDate; }
 
-    /**
-     * ✅ FIX: Overloaded Setter for LocalDate.
-     * Required to resolve "incompatible types" error in TestNG line 576.
-     */
+ 
     public void setPredictedFullDate(LocalDate localDate) {
         if (localDate == null) {
             this.predictedFullDate = null;

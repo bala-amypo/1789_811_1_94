@@ -29,7 +29,6 @@ public class UsagePatternModel {
 
     public UsagePatternModel() {}
 
-    // Existing constructor
     public UsagePatternModel(Bin bin,
                              Double avgDailyIncreaseWeekday,
                              Double avgDailyIncreaseWeekend,
@@ -40,7 +39,6 @@ public class UsagePatternModel {
         this.lastUpdated = lastUpdated;
     }
 
-    // ✅ ADDED: LocalDateTime constructor
     public UsagePatternModel(Bin bin,
                              Double avgDailyIncreaseWeekday,
                              Double avgDailyIncreaseWeekend,
@@ -50,33 +48,7 @@ public class UsagePatternModel {
              avgDailyIncreaseWeekend,
              Timestamp.valueOf(lastUpdated));
     }
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // private Long id;
-
-    // @ManyToOne
-    // @JoinColumn(name = "bin_id")
-    // private Bin bin;
-
-    // private Double avgDailyIncreaseWeekday;
-    // private Double avgDailyIncreaseWeekend;
-
-    // private Timestamp lastUpdated;
-
-    // public UsagePatternModel() {
-    // }
-
-    // public UsagePatternModel(Bin bin,
-    //                          Double avgDailyIncreaseWeekday,
-    //                          Double avgDailyIncreaseWeekend,
-    //                          Timestamp lastUpdated) {
-    //     this.bin = bin;
-    //     this.avgDailyIncreaseWeekday = avgDailyIncreaseWeekday;
-    //     this.avgDailyIncreaseWeekend = avgDailyIncreaseWeekend;
-    //     this.lastUpdated = lastUpdated;
-    // }
-
-    // Getters and setters
+    
     public Long getId() {
         return id;
     }

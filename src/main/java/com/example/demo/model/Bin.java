@@ -77,7 +77,7 @@ public class Bin {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = Timestamp.valueOf(updatedAt);
     }
- 
+
     public Long getId() {
         return id;
     }
@@ -137,20 +137,5 @@ public class Bin {
     public void setActive(Boolean active) {
         this.active = active;
     }
-
-    // public Timestamp getCreatedAt() {
-    //     return createdAt;
-    // }
-
-    // public void setCreatedAt(Timestamp createdAt) {
-    //     this.createdAt = createdAt;
-    // }
-
-    // public Timestamp getUpdatedAt() {
-    //     return updatedAt;
-    // }
-
-    // public void setUpdatedAt(Timestamp updatedAt) {
-    //     this.updatedAt = updatedAt;
-    // }
+    
 }

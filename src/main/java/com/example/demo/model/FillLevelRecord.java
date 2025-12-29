@@ -29,7 +29,6 @@ public class FillLevelRecord {
 
     public FillLevelRecord() {}
 
-    // Existing constructor
     public FillLevelRecord(Bin bin, Double fillPercentage,
                            Timestamp recordedAt, Boolean isWeekend) {
         this.bin = bin;
@@ -38,7 +37,6 @@ public class FillLevelRecord {
         this.isWeekend = isWeekend;
     }
 
-    // ✅ ADDED: LocalDateTime constructor
     public FillLevelRecord(Bin bin, Double fillPercentage,
                            LocalDateTime recordedAt, Boolean isWeekend) {
         this(bin, fillPercentage,
@@ -51,34 +49,7 @@ public class FillLevelRecord {
     public void setRecordedAt(LocalDateTime recordedAt) {
         this.recordedAt = Timestamp.valueOf(recordedAt);
     }
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // private Long id;
-
-    // @ManyToOne
-    // @JoinColumn(name = "bin_id")
-    // private Bin bin;
-
-    // private Double fillPercentage;
-
-    // private Timestamp recordedAt;
-
-    // private Boolean isWeekend;
-
-    // public FillLevelRecord() {
-    // }
-
-    // public FillLevelRecord(Bin bin,
-    //                        Double fillPercentage,
-    //                        Timestamp recordedAt,
-    //                        Boolean isWeekend) {
-    //     this.bin = bin;
-    //     this.fillPercentage = fillPercentage;
-    //     this.recordedAt = recordedAt;
-    //     this.isWeekend = isWeekend;
-    // }
-
-    // Getters and setters
+   
     public Long getId() {
         return id;
     }
@@ -98,14 +69,6 @@ public class FillLevelRecord {
     public void setFillPercentage(Double fillPercentage) {
         this.fillPercentage = fillPercentage;
     }
-
-    // public Timestamp getRecordedAt() {
-    //     return recordedAt;
-    // }
-
-    // public void setRecordedAt(Timestamp recordedAt) {
-    //     this.recordedAt = recordedAt;
-    // }
 
     public Boolean getIsWeekend() {
         return isWeekend;
