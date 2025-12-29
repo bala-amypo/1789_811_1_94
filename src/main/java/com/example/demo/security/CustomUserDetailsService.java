@@ -25,15 +25,30 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         return user;
     }
-
-    public DemoUser registerUser(String name, String email, String password) {
-        if (users.containsKey(email)) {
-            throw new RuntimeException("User already exists");
-        }
-        DemoUser user = new DemoUser(name, email, password, "USER");
-        users.put(email, user);
-        return user;
+    public DemoUser registerUser(String name, String email, String password, String role) {
+    if (users.containsKey(email)) {
+        throw new RuntimeException("User already exists");
     }
+
+    // Default role safety
+    if (role == null || role.isBlank()) {
+        role = "USER";
+    }
+
+    DemoUser user = new DemoUser(name, email, password, role.toUpperCase());
+    users.put(email, user);
+    return user;
+}
+
+
+    // public DemoUser registerUser(String name, String email, String password) {
+    //     if (users.containsKey(email)) {
+    //         throw new RuntimeException("User already exists");
+    //     }
+    //     DemoUser user = new DemoUser(name, email, password, "USER");
+    //     users.put(email, user);
+    //     return user;
+    // }
 
     @Override
     public UserDetails loadUserByUsername(String email)
