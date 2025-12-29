@@ -14,21 +14,18 @@ import io.jsonwebtoken.security.Keys;
 public class JwtTokenProvider {
 
     private final SecretKey key;
-    private final long validityMs = 3600000; // 1 hour
+    private final long validityMs = 3600000;
 
-    // ✅ REQUIRED by Spring Boot
     public JwtTokenProvider() {
         this.key = Keys.hmacShaKeyFor(
                 "qwertyuiop1234567890zxcvbnm@#$%^".getBytes()
         );
     }
 
-    // ✅ REQUIRED by TestNG (DO NOT REMOVE)
     public JwtTokenProvider(String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // ✅ EXACT signature required by TestNG tests
     public String generateToken(Authentication authentication,
                                 Long userId,
                                 String role,

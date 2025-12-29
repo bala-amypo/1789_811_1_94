@@ -12,10 +12,8 @@ import com.example.demo.model.Zone;
 @Repository
 public interface OverflowPredictionRepository extends JpaRepository<OverflowPrediction, Long> {
 
-    // Fetch all predictions for a specific bin
     List<OverflowPrediction> findByBinId(Long binId);
 
-    // Fetch latest prediction for each bin in a zone
     @Query("""
         SELECT p FROM OverflowPrediction p
         WHERE p.bin.zone = :zone

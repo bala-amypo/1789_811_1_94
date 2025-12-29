@@ -27,7 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService userDetailsService;
 
-    // Secret key must match JwtTokenProvider
     private final String secret = "qwertyuiop123456asdfghjkl09876x#";
     private final Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
